@@ -1,0 +1,25 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Build
+.next
+dist
+out
+.esbuild
+.serverless
+
+# Env
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE
+.vscode
+.DS_Store
+
+# Zips
+*.zip
