@@ -1,0 +1,26 @@
+{
+  "name": "preeti-medical-store-infra",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "serverless deploy",
+    "build": "echo building...",
+    "lint": "echo lint"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.626.0",
+    "@aws-sdk/client-s3": "^3.626.0",
+    "@aws-sdk/lib-dynamodb": "^3.626.0",
+    "@aws-sdk/s3-request-presigner": "^3.626.0",
+    "jsonwebtoken": "^9.0.2",
+    "twilio": "^4.23.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.137",
+    "esbuild": "^0.21.5",
+    "serverless": "^3.39.0",
+    "serverless-esbuild": "^1.52.1",
+    "typescript": "^5.4.5"
+  }
+}
