@@ -1,0 +1,101 @@
+service: preeti-medical-store
+frameworkVersion: '3'
+
+plugins:
+  - serverless-esbuild
+
+provider:
+  name: aws
+  region: ap-south-1
+  runtime: nodejs20.x
+  stage: prod
+  httpApi:
+    cors: true
+  environment:
+    TABLE_USERS: PreetiUsers
+    TABLE_PRODUCTS: PreetiProducts
+    TABLE_ORDERS: PreetiOrders
+    BUCKET: preeti-store-bucket
+    USER_POOL_ID: ${env:USER_POOL_ID}
+    TWILIO_SID: ${env:TWILIO_SID}
+    TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN}
+    TWILIO_WHATSAPP_FROM: ${env:TWILIO_WHATSAPP_FROM}
+
+package:
+  individually: true
+
+functions:
+  getProducts:
+    handler: lambdas/getProducts.handler
+    events: [{ httpApi: { path: /products, method: get } }]
+  upsertProduct:
+    handler: lambdas/upsertProduct.handler
+    events: [{ httpApi: { path: /products, method: post } }]
+  getPresign:
+    handler: lambdas/getPresign.handler
+    events: [{ httpApi: { path: /presign, method: post } }]
+  createOrder:
+    handler: lambdas/createOrder.handler
+    events: [{ httpApi: { path: /orders, method: post } }]
+  getOrders:
+    handler: lambdas/getOrders.handler
+    events: [{ httpApi: { path: /orders, method: get } }]
+  updateOrder:
+    handler: lambdas/updateOrder.handler
+    events: [{ httpApi: { path: /orders, method: put } }]
+  getMe:
+    handler: lambdas/getMe.handler
+    events: [{ httpApi: { path: /me, method: get } }]
+  upsertProfile:
+    handler: lambdas/upsertProfile.handler
+    events: [{ httpApi: { path: /me, method: put } }]
+
+resources:
+  Resources:
+    Users:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: PreetiUsers
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - { AttributeName: pk, AttributeType: S }
+          - { AttributeName: sk, AttributeType: S }
+        KeySchema:
+          - { AttributeName: pk, KeyType: HASH }
+          - { AttributeName: sk, KeyType: RANGE }
+
+    Products:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: PreetiProducts
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - { AttributeName: pk, AttributeType: S }
+          - { AttributeName: sk, AttributeType: S }
+        KeySchema:
+          - { AttributeName: pk, KeyType: HASH }
+          - { AttributeName: sk, KeyType: RANGE }
+
+    Orders:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: PreetiOrders
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - { AttributeName: pk, AttributeType: S }
+          - { AttributeName: sk, AttributeType: S }
+        KeySchema:
+          - { AttributeName: pk, KeyType: HASH }
+          - { AttributeName: sk, KeyType: RANGE }
+
+    Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: preeti-store-bucket
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins: ["*"]
+              AllowedMethods: ["GET", "PUT"]
+              AllowedHeaders: ["*"]
+
+# NOTE: For simplicity role permissions are not declared here. Serverless will create a role; tighten IAM in prod.
